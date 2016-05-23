@@ -45,7 +45,6 @@ public class Algotithms {
                     a.proces.add(PageReferences.get(s));
                 }
             }
-            // System.out.println(ProcessesTab[w].proces.size());
         }
 
 
@@ -89,6 +88,7 @@ public class Algotithms {
     }
 
     public int ALG_3() {
+        int PFMax =(int)0.6*PagesNr;
         int frame_size = FRAME_SIZE / ProcessesTab.length;
         Proces[] ProcessesTabCopy = new Proces[Processes];
         for (int k = 0; k < ProcessesTab.length; k++) {
@@ -101,7 +101,6 @@ public class Algotithms {
         int size = Processes;
         int PFGlobal = 0;
         while (size != 0) {
-            // System.out.println("\n"+PFGlobal + "\n");
             int min = interval;
             int max = 0;
             int minI = 0;
@@ -113,7 +112,6 @@ public class Algotithms {
                         ProcessesTabCopy[i].setFrame(ProcessesTabCopy[i].FRAME_SIZE + freeFrames);
                         freeFrames = 0;
                     }
-                    //   System.out.println("i: " + i + "ramka" + t.FRAME_SIZE);
                     int pf = t.PPF;
                     int pfsingle = t.LRU(t.proces);
                     if (pf > max) {
@@ -132,20 +130,17 @@ public class Algotithms {
                         ProcessesTabCopy[maxI].setFrame(ProcessesTabCopy[maxI].FRAME_SIZE + ProcessesTabCopy[i].FRAME_SIZE);
                     } else {
                         freeFrames += ProcessesTabCopy[i].FRAME_SIZE;
-                        //      System.out.println("freeeeeeeeeeeeeeeeeee framessssssssssssssssssssssss: " + freeFrames);
                     }
                     ProcessesTabCopy[i] = null;
-                    //    System.out.println("nuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuul " + i);
                     size--;
                 }
 
             }
-            if (ProcessesTabCopy[minI] != null && ProcessesTabCopy[maxI] != null && ProcessesTabCopy[minI].PFrame != 1 && (max >= min + 2)) {
-                //  System.out.println("----------------------------------");
+            if (ProcessesTabCopy[minI] != null && ProcessesTabCopy[maxI] != null && ProcessesTabCopy[minI].PFrame != 1
+                    &&max>PFMax ) {
                 if (ProcessesTabCopy[minI].FRAME_SIZE > 3) {
                     ProcessesTabCopy[minI].setFrame(ProcessesTabCopy[minI].FRAME_SIZE - 1);
                     ProcessesTabCopy[maxI].setFrame(ProcessesTabCopy[maxI].FRAME_SIZE + 1 + freeFrames);
-                    //     System.out.println("ramki dostała : " + maxI);
                     freeFrames = 0;
                 }
             }
@@ -171,9 +166,11 @@ public class Algotithms {
             for (int k = allDone + 1; k < ProcessesTab.length; k++) {
                if (freeFrames > ProcessesTabCopy[k].FRAME_SIZE) {
                     allDone++;
-                   freeFrames=-ProcessesTabCopy[k].PFrame;
+                   int w = ProcessesTabCopy[k].FRAME_SIZE;
+                   freeFrames-=w;
                     if(ProcessesTabCopy[k].FRAME_SIZE!= 0){
                         int h = LRU(ProcessesTabCopy[k].proces, ProcessesTabCopy[k].FRAME_SIZE);
+
                         PFGlobal +=h ;
                     }
 
@@ -229,8 +226,7 @@ public class Algotithms {
         return PF;
     }
 
-   public int numberOfDuplications(ArrayList<Page> a, int zone)
-   {
+   public int numberOfDuplications(ArrayList<Page> a, int zone)   {
        HashSet h = new HashSet();
        if(zone>a.size())
        {
